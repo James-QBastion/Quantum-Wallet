@@ -1,121 +1,178 @@
 """
-Implementation of the RNG used during the signing procedure.
-This RNG is based on ChaCha20. The 56-bytes seed is split into
-14 words s[0], ..., s[13] of 32 bits each. s[12], s[13] define
-a 64-bit counter ctr = s[12] + s[13] << 32
+Deterministic pseudo-random byte generator for the QBastion signer.
 
-Random bits are generated as follow:
-- fill the ChaCha20 matrix as follows:
-    CW[0]  CW[1]  CW[2]  CW[3]
-     s[0]   s[1]   s[2]   s[3]
-     s[4]   s[5]   s[6]   s[7]
-     s[8]   s[9]   s[1]   s[1]
-- generate 512 bits of randomness by applying the block function as
-  in "regular" ChaCha20 (e.g. https://tools.ietf.org/html/rfc7539)
-- increment ctr
-For efficiency reasons, the reference code generates 8 chunks of randomness
-at a time (hence 512 * 8 = 4096 bits), and interleave the outputs by blocks
-of 32 bits. For reproducibility, we do the same here.
+Wraps a ChaCha20 stream cipher seeded from a 56-byte signing seed. This
+is used by the Falcon signing procedure to produce deterministic, reproducible
+signatures when a seed is provided (as required by the NIST KAT vectors).
+
+The generator exactly matches the interleaving strategy of the Falcon reference
+C implementation: it produces 8 concurrent block-function calls at a time and
+interleaves their 32-bit output words to match the reference byte ordering.
+
+ChaCha20 matrix layout (column-major, 4x4 words):
+    MAGIC[0]  MAGIC[1]  MAGIC[2]  MAGIC[3]
+    seed[0]   seed[1]   seed[2]   seed[3]
+    seed[4]   seed[5]   seed[6]   seed[7]
+    seed[8]   seed[9]   ctr_lo    ctr_hi
+
+Counter is a 64-bit integer split across words 12 and 13 of the seed.
 """
 
-# ChaCha20 constants
-CW = [0x61707865, 0x3320646e, 0x79622d32, 0x6b206574]
+# Standard ChaCha20 magic constant words ("expand 32-byte k")
+_CHACHA_MAGIC = [0x61707865, 0x3320646e, 0x79622d32, 0x6b206574]
+
+# Keep legacy alias
+CW = _CHACHA_MAGIC
 
 
-def roll(x, n):
-    """
-    The roll function
-    Lifted from https://www.johndcook.com/blog/2019/03/03/do-the-chacha/
-    """
-    return ((x << n) & 0xffffffff) + (x >> (32 - n))
+def _rotate_left_32(word, shift):
+    """Left-rotate a 32-bit integer by `shift` positions."""
+    return ((word << shift) & 0xFFFFFFFF) | (word >> (32 - shift))
+
+
+roll = _rotate_left_32  # legacy alias
 
 
 class ChaCha20:
+    """ChaCha20-based pseudo-random generator seeded from a 56-byte seed.
 
-    def __init__(self, src):
+    Provides a `randombytes(k)` method that returns k pseudo-random bytes,
+    matching the byte order used by the Falcon reference implementation's
+    PRNG. The generator maintains an internal ring buffer of pre-generated
+    hex bytes to amortize the cost of the block function.
+    """
+
+    def __init__(self, seed_bytes):
+        """Initialize the generator from a 56-byte seed.
+
+        The seed is parsed as 14 little-endian 32-bit words. Words 12 and 13
+        are used as the low and high halves of a 64-bit counter.
+
+        Args:
+            seed_bytes: bytes-like object of length 56.
         """
-        Initialize the PRG. src is the initial seed, ctr is the counter,
-        and hexbytes is a buffer for the pseudorandom output.
-        """
-        self.s = [int.from_bytes(src[4 * i: 4 * (i + 1)], "little") for i in range(14)]
-        self.ctr = self.s[12] + (self.s[13] << 32)
-        self.hexbytes = ""
+        self._words = [
+            int.from_bytes(seed_bytes[4 * i: 4 * (i + 1)], "little")
+            for i in range(14)
+        ]
+        self._counter = self._words[12] + (self._words[13] << 32)
+        self._hex_buf = ""
 
     def __repr__(self):
-        """
-        Print the PRG state.
-        """
-        rep = "s = ["
-        for elt in self.s:
-            rep += '0x{:08x}, '.format(elt)
-        rep = rep[:-2] + "]\n"
-        rep += "ctr = " + str(self.ctr)
-        return rep
+        parts = ', '.join(f'0x{w:08x}' for w in self._words)
+        return f"ChaCha20(words=[{parts}], ctr={self._counter})"
 
-    def qround(self, A, B, C, D):
-        """
-        Quarter-round function.
-        Lifted from https://www.johndcook.com/blog/2019/03/03/do-the-chacha/,
-        then modified.
-        """
-        a = self.state[A]
-        b = self.state[B]
-        c = self.state[C]
-        d = self.state[D]
-        a = (a + b) & 0xffffffff
-        d = roll(d ^ a, 16)
-        c = (c + d) & 0xffffffff
-        b = roll(b ^ c, 12)
-        a = (a + b) & 0xffffffff
-        d = roll(d ^ a, 8)
-        c = (c + d) & 0xffffffff
-        b = roll(b ^ c, 7)
-        self.state[A] = a
-        self.state[B] = b
-        self.state[C] = c
-        self.state[D] = d
+    def _quarter_round(self, idx_a, idx_b, idx_c, idx_d):
+        """Apply one ChaCha20 quarter-round to self._state in-place."""
+        a = self._state[idx_a]
+        b = self._state[idx_b]
+        c = self._state[idx_c]
+        d = self._state[idx_d]
+
+        a = (a + b) & 0xFFFFFFFF;  d = _rotate_left_32(d ^ a, 16)
+        c = (c + d) & 0xFFFFFFFF;  b = _rotate_left_32(b ^ c, 12)
+        a = (a + b) & 0xFFFFFFFF;  d = _rotate_left_32(d ^ a, 8)
+        c = (c + d) & 0xFFFFFFFF;  b = _rotate_left_32(b ^ c, 7)
+
+        self._state[idx_a] = a
+        self._state[idx_b] = b
+        self._state[idx_c] = c
+        self._state[idx_d] = d
+
+    # Legacy method name expected by the block_update / test code
+    qround = _quarter_round
 
     def update(self):
-        """
-        One update of the ChaCha20 PRG.
-        """
-        self.state = [0] * 16
-        self.state[0:4] = CW[:]
-        self.state[4:14] = [self.s[i] for i in range(10)]
-        self.state[14] = self.s[10] ^ (self.ctr & 0xffffffff)
-        self.state[15] = self.s[11] ^ (self.ctr >> 32)
-        state = self.state[:]
+        """Run one ChaCha20 block function and return the 16-word output."""
+        self._state = [0] * 16
+        self._state[0:4]  = _CHACHA_MAGIC[:]
+        self._state[4:14] = self._words[:10]
+        self._state[14]   = self._words[10] ^ (self._counter & 0xFFFFFFFF)
+        self._state[15]   = self._words[11] ^ (self._counter >> 32)
+        snap = self._state[:]
+        # 20 rounds = 10 double rounds
         for _ in range(10):
-            self.qround(0, 4, 8, 12)
-            self.qround(1, 5, 9, 13)
-            self.qround(2, 6, 10, 14)
-            self.qround(3, 7, 11, 15)
-            self.qround(0, 5, 10, 15)
-            self.qround(1, 6, 11, 12)
-            self.qround(2, 7, 8, 13)
-            self.qround(3, 4, 9, 14)
+            # Column rounds
+            self._quarter_round(0, 4, 8,  12)
+            self._quarter_round(1, 5, 9,  13)
+            self._quarter_round(2, 6, 10, 14)
+            self._quarter_round(3, 7, 11, 15)
+            # Diagonal rounds
+            self._quarter_round(0, 5, 10, 15)
+            self._quarter_round(1, 6, 11, 12)
+            self._quarter_round(2, 7, 8,  13)
+            self._quarter_round(3, 4, 9,  14)
         for i in range(16):
-            self.state[i] = (self.state[i] + state[i]) & 0xffffffff
-        self.ctr += 1
-        return self.state
+            self._state[i] = (self._state[i] + snap[i]) & 0xFFFFFFFF
+        self._counter += 1
+        return self._state
+
+    # Expose internal state as `state` for backward compatibility
+    @property
+    def state(self):
+        return self._state
+
+    @state.setter
+    def state(self, value):
+        self._state = value
+
+    # Expose _words as `s` for backward compatibility
+    @property
+    def s(self):
+        return self._words
+
+    @s.setter
+    def s(self, value):
+        self._words = value
+
+    # Expose _counter as `ctr` for backward compat
+    @property
+    def ctr(self):
+        return self._counter
+
+    @ctr.setter
+    def ctr(self, value):
+        self._counter = value
+
+    # Expose _hex_buf as `hexbytes` for backward compat
+    @property
+    def hexbytes(self):
+        return self._hex_buf
+
+    @hexbytes.setter
+    def hexbytes(self, value):
+        self._hex_buf = value
 
     def block_update(self):
+        """Generate 8 parallel ChaCha20 blocks and interleave 32-bit words.
+
+        This matches the reference code's strategy of processing 8 blocks
+        simultaneously with outputs interleaved to improve SIMD utilization.
+
+        Returns:
+            A hex string representing 4096 pseudo-random bits.
         """
-        Produces 8 consecurite updates, and interleave the results.
-        """
-        block = [None] * 16 * 8
+        interleaved = [None] * (16 * 8)
         for i in range(8):
-            block[i::8] = self.update()
-        return "".join(elt.to_bytes(4, "little").hex() for elt in block)
+            interleaved[i::8] = self.update()
+        return "".join(w.to_bytes(4, "little").hex() for w in interleaved)
 
     def randombytes(self, k):
+        """Return k pseudo-random bytes, refilling the buffer as needed.
+
+        The byte ordering matches the Falcon reference implementation's
+        interleaving convention.
+
+        Args:
+            k: number of bytes to generate
+
+        Returns:
+            bytes of length k.
         """
-        Generate random bytes.
-        Perform some shenanigans to match the reference code PRG.
-        """
-        if (2 * k > len(self.hexbytes)):
-            self.hexbytes = self.block_update()
-        out = self.hexbytes[:(2 * k)]
-        out = "".join(out[i:i + 2] for i in range(2 * k - 2, -1, -2))
-        self.hexbytes = self.hexbytes[(2 * k):]
-        return bytes.fromhex(out)[::-1]
+        if 2 * k > len(self._hex_buf):
+            self._hex_buf = self.block_update()
+        chunk = self._hex_buf[: 2 * k]
+        # Byte-reverse each hex pair to match the reference endianness
+        chunk = "".join(chunk[i: i + 2] for i in range(2 * k - 2, -1, -2))
+        self._hex_buf = self._hex_buf[2 * k:]
+        return bytes.fromhex(chunk)[::-1]

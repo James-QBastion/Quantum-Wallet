@@ -1,45 +1,80 @@
-"""This file contains methods and objects which are reused through multiple files."""
+"""
+Shared utilities and constants for the QBastion Falcon integration layer.
+This module provides core polynomial manipulation routines used throughout
+the post-quantum signature pipeline.
+"""
 
 
-"""q is the integer modulus which is used in Falcon."""
-q = 12 * 1024 + 1
+# Falcon modulus: q = 12 * 2^10 + 1
+FALCON_MODULUS = 12 * 1024 + 1
+# Alias for interoperability with other modules that import `q` directly
+q = FALCON_MODULUS
 
 
-def split(f):
-    """Split a polynomial f in two polynomials.
+def poly_split(poly):
+    """Decompose a polynomial into two interleaved sub-polynomials.
 
-    Args:
-        f: a polynomial
-
-    Format: coefficient
-    """
-    n = len(f)
-    f0 = [f[2 * i + 0] for i in range(n // 2)]
-    f1 = [f[2 * i + 1] for i in range(n // 2)]
-    return [f0, f1]
-
-
-def merge(f_list):
-    """Merge two polynomials into a single polynomial f.
+    Given poly = [a0, a1, a2, a3, ...], produces:
+        even = [a0, a2, ...]
+        odd  = [a1, a3, ...]
 
     Args:
-        f_list: a list of polynomials
+        poly: input polynomial in coefficient representation
 
-    Format: coefficient
+    Returns:
+        A pair [even_coeffs, odd_coeffs]
     """
-    f0, f1 = f_list
-    n = 2 * len(f0)
-    f = [0] * n
-    for i in range(n // 2):
-        f[2 * i + 0] = f0[i]
-        f[2 * i + 1] = f1[i]
-    return f
+    length = len(poly)
+    half = length // 2
+    even_coeffs = [poly[2 * idx] for idx in range(half)]
+    odd_coeffs  = [poly[2 * idx + 1] for idx in range(half)]
+    return [even_coeffs, odd_coeffs]
 
 
-def sqnorm(v):
-    """Compute the square euclidean norm of the vector v."""
-    res = 0
-    for elt in v:
-        for coef in elt:
-            res += coef ** 2
-    return res
+# Legacy alias used by fft.py / ntt.py
+split = poly_split
+
+
+def poly_merge(sub_polys):
+    """Reconstruct a polynomial from two interleaved sub-polynomials.
+
+    The inverse of poly_split: interleaves even and odd coefficient lists
+    back into a single polynomial.
+
+    Args:
+        sub_polys: a list [even_coeffs, odd_coeffs]
+
+    Returns:
+        The reconstructed polynomial
+    """
+    even_part, odd_part = sub_polys
+    total_len = 2 * len(even_part)
+    result = [0] * total_len
+    for idx in range(total_len // 2):
+        result[2 * idx]     = even_part[idx]
+        result[2 * idx + 1] = odd_part[idx]
+    return result
+
+
+# Legacy alias
+merge = poly_merge
+
+
+def squared_norm(vec):
+    """Compute the squared Euclidean norm of a 2D polynomial vector.
+
+    Args:
+        vec: a list of polynomials, e.g. [s0, s1]
+
+    Returns:
+        The sum of squares of all coefficients across all component polynomials.
+    """
+    total = 0
+    for component in vec:
+        for coeff in component:
+            total += coeff * coeff
+    return total
+
+
+# Legacy alias used in test.py
+sqnorm = squared_norm
