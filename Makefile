@@ -3,7 +3,7 @@ PROVING_UTILS_REV=efbaeebfdce3463aa61e16d7d8e6069f03df0994
 
 install-stwo-run-and-prove:
 	cargo +nightly-2025-07-14 install \
-		--git ssh://git@github.com/m-kus/proving-utils.git \
+		--git ssh://git@github.com/James-Brown/proving-utils.git \
 		--rev $(PROVING_UTILS_REV) \
 		stwo_run_and_prove --force
 

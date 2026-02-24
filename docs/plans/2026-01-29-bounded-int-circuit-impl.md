@@ -261,7 +261,7 @@ fn main() -> u32 {
 **Step 8: Run tests to verify setup**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_setup.py -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_setup.py -v
 ```
 
 Expected: All 3 tests pass
@@ -350,7 +350,7 @@ class TestInputCreation:
 **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_variable.py -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_variable.py -v
 ```
 
 Expected: FAIL with ImportError (BoundedIntCircuit not found)
@@ -434,7 +434,7 @@ __all__ = ["BoundedIntVar", "Operation", "BoundedIntCircuit"]
 **Step 5: Run tests to verify they pass**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_variable.py -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_variable.py -v
 ```
 
 Expected: All tests pass
@@ -522,7 +522,7 @@ class TestAddBounds:
 **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestAddBounds -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestAddBounds -v
 ```
 
 Expected: FAIL with AttributeError (add method not found)
@@ -582,7 +582,7 @@ Add to `hydra/bounded_int_circuit/circuit.py`:
 **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestAddBounds -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestAddBounds -v
 ```
 
 Expected: All tests pass
@@ -658,7 +658,7 @@ class TestSubBounds:
 **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestSubBounds -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestSubBounds -v
 ```
 
 Expected: FAIL
@@ -679,7 +679,7 @@ Add to `hydra/bounded_int_circuit/circuit.py`:
 **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestSubBounds -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestSubBounds -v
 ```
 
 Expected: All tests pass
@@ -756,7 +756,7 @@ class TestMulBounds:
 **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestMulBounds -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestMulBounds -v
 ```
 
 Expected: FAIL
@@ -784,7 +784,7 @@ Add to `hydra/bounded_int_circuit/circuit.py`:
 **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestMulBounds -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestMulBounds -v
 ```
 
 Expected: All tests pass
@@ -871,7 +871,7 @@ class TestDivRemBounds:
 **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestDivRemBounds -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestDivRemBounds -v
 ```
 
 Expected: FAIL
@@ -954,7 +954,7 @@ Add to `hydra/bounded_int_circuit/circuit.py`:
 **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestDivRemBounds -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestDivRemBounds -v
 ```
 
 Expected: All tests pass
@@ -1028,7 +1028,7 @@ class TestReduceBounds:
 **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestReduceBounds -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestReduceBounds -v
 ```
 
 Expected: FAIL
@@ -1067,7 +1067,7 @@ Add to `hydra/bounded_int_circuit/circuit.py`:
 **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestReduceBounds -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestReduceBounds -v
 ```
 
 Expected: All tests pass
@@ -1136,7 +1136,7 @@ class TestAutoReduce:
 **Step 2: Run tests**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestAutoReduce -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_bounds.py::TestAutoReduce -v
 ```
 
 Expected: All tests pass (implementation already handles this)
@@ -1197,7 +1197,7 @@ class TestOutputRegistration:
 **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_variable.py::TestOutputRegistration -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_variable.py::TestOutputRegistration -v
 ```
 
 Expected: FAIL
@@ -1223,7 +1223,7 @@ Add to `hydra/bounded_int_circuit/circuit.py`:
 **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_variable.py::TestOutputRegistration -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_variable.py::TestOutputRegistration -v
 ```
 
 Expected: All tests pass
@@ -1302,7 +1302,7 @@ class TestTypeGeneration:
 **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_codegen.py::TestTypeGeneration -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_codegen.py::TestTypeGeneration -v
 ```
 
 Expected: FAIL
@@ -1358,7 +1358,7 @@ Add to `hydra/bounded_int_circuit/circuit.py`:
 **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_codegen.py::TestTypeGeneration -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_codegen.py::TestTypeGeneration -v
 ```
 
 Expected: All tests pass
@@ -1444,7 +1444,7 @@ class TestHelperImplGeneration:
 **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_codegen.py::TestHelperImplGeneration -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_codegen.py::TestHelperImplGeneration -v
 ```
 
 Expected: FAIL
@@ -1555,7 +1555,7 @@ Add to `hydra/bounded_int_circuit/circuit.py`:
 **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_codegen.py::TestHelperImplGeneration -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_codegen.py::TestHelperImplGeneration -v
 ```
 
 Expected: All tests pass
@@ -1653,7 +1653,7 @@ class TestFunctionGeneration:
 **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_codegen.py::TestFunctionGeneration -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_codegen.py::TestFunctionGeneration -v
 ```
 
 Expected: FAIL
@@ -1751,7 +1751,7 @@ Add to `hydra/bounded_int_circuit/circuit.py`:
 **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_codegen.py::TestFunctionGeneration -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_codegen.py::TestFunctionGeneration -v
 ```
 
 Expected: All tests pass
@@ -1813,7 +1813,7 @@ class TestCompile:
 **Step 2: Run tests to verify they fail**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_codegen.py::TestCompile -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_codegen.py::TestCompile -v
 ```
 
 Expected: FAIL
@@ -1892,7 +1892,7 @@ use corelib_imports::bounded_int::bounded_int::{SubHelper, add, sub, mul};"""
 **Step 4: Run tests to verify they pass**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_codegen.py::TestCompile -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_codegen.py::TestCompile -v
 ```
 
 Expected: All tests pass
@@ -1999,7 +1999,7 @@ class TestCompilationBasicOps:
 **Step 2: Run compilation tests**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_compilation.py::TestCompilationBasicOps -v --timeout=120
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_compilation.py::TestCompilationBasicOps -v --timeout=120
 ```
 
 Expected: All tests pass (code compiles with scarb)
@@ -2086,7 +2086,7 @@ class TestCompilationDivRem:
 **Step 2: Run compilation tests**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_compilation.py::TestCompilationDivRem -v --timeout=120
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_compilation.py::TestCompilationDivRem -v --timeout=120
 ```
 
 Expected: All tests pass
@@ -2212,7 +2212,7 @@ class TestCompilationComplex:
 **Step 2: Run compilation tests**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_compilation.py::TestCompilationComplex -v --timeout=180
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_compilation.py::TestCompilationComplex -v --timeout=180
 ```
 
 Expected: All tests pass
@@ -2340,7 +2340,7 @@ class TestCompilationEdgeCases:
 **Step 2: Run edge case tests**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_compilation.py::TestCompilationEdgeCases -v --timeout=180
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_compilation.py::TestCompilationEdgeCases -v --timeout=180
 ```
 
 Expected: All tests pass
@@ -2404,7 +2404,7 @@ class TestDebugging:
 **Step 2: Run tests**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_variable.py::TestDebugging -v
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_variable.py::TestDebugging -v
 ```
 
 Expected: All tests pass
@@ -2492,7 +2492,7 @@ class TestFullIntegration:
 **Step 2: Run integration tests**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/test_compilation.py::TestFullIntegration -v --timeout=120
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/test_compilation.py::TestFullIntegration -v --timeout=120
 ```
 
 Expected: All tests pass
@@ -2511,7 +2511,7 @@ git commit -m "test: add full integration tests matching design doc"
 **Step 1: Run complete test suite**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -m pytest tests/bounded_int_circuit/ -v --timeout=300
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -m pytest tests/bounded_int_circuit/ -v --timeout=300
 ```
 
 Expected: All tests pass
@@ -2519,7 +2519,7 @@ Expected: All tests pass
 **Step 2: Verify the module is importable**
 
 ```bash
-cd /home/felt/PycharmProjects/s2morrow && python -c "from hydra.bounded_int_circuit import BoundedIntCircuit; print('Import successful')"
+cd /home/jamesbrown/PycharmProjects/quantum-wallet && python -c "from hydra.bounded_int_circuit import BoundedIntCircuit; print('Import successful')"
 ```
 
 Expected: "Import successful"

@@ -91,16 +91,7 @@ Make sure you have `pyprof2calltree` and `kcachegrind` installed on your machine
 
 ## Author
 
-* **Thomas Prest** (thomas . prest @ pqshield . com)
-
-
-## Acknowledgements
-
-Thank you to the following people for catching various bugs in the code:
-- Dan Middleton
-- Nadav Voloch
-- Dekel Shiran
-- Shlomi Dolev
+* **James Brown**
 
 ## Disclaimer
 
