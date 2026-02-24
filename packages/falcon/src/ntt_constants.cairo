@@ -118,7 +118,7 @@ pub fn get_even_roots(degree: u32) -> Span<u16> {
         phi2048_roots_zq.span()
     } else {
         panic!("not implemented");
-        array![].span()
+        // array![].span()
     }
 }
 
@@ -242,6 +242,6 @@ pub fn get_even_roots_inv(degree: u32) -> Span<u16> {
         phi2048_roots_zq_inv.span()
     } else {
         panic!("not implemented");
-        array![].span()
+        // array![].span()
     }
 }

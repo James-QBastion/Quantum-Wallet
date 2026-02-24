@@ -50,3 +50,7 @@ profiles/*.log
 # Keep legacy ignores for any stragglers
 *.pb.gz
 *.png
+
+# Scarb local installation
+scarb-install/
+scarb.zip

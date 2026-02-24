@@ -3,7 +3,7 @@
 
 use corelib_imports::bounded_int::bounded_int::{SubHelper, add, mul, sub};
 use corelib_imports::bounded_int::{
-    AddHelper, BoundedInt, DivRemHelper, MulHelper, UnitInt, bounded_int_div_rem, downcast, upcast,
+    AddHelper, BoundedInt, DivRemHelper, MulHelper, UnitInt, bounded_int_div_rem, downcast,
 };
 
 type BInt_n11413897359360_127551836160 = BoundedInt<-11413897359360, 127551836160>;

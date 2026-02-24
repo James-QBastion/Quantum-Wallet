@@ -1,8 +1,8 @@
-# S2morrow
+# QBastion (Quantum Bastion)
 
-STARK-based aggregation of quantum-resistant signatures.  
+Quantum Node Protection system using STARK-based aggregation of quantum-resistant signatures.
 
-This project explores zkVM approach for batch verification of multiple PQ signatures. The goal is compare proving time for different signature schemes, as well as benchmark vs other approaches (e.g. LaBRADOR) in terms of proof size (compression ratio) and verification time. 
+This project adapts the s2morrow architecture to create a quantum-resistant node system. The goal is to detect and block quantum computers attempting to decode cryptocurrency wallets, utilizing zkVM for batch verification of multiple PQ signatures. 
 
 Implementation details:
 - ZKVM: Cairo

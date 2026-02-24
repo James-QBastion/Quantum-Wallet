@@ -8,6 +8,7 @@ pub mod ntt_bounded_int;
 pub mod ntt_constants;
 pub mod programs;
 pub mod zq;
+pub mod ingress;
 
 #[cfg(test)]
 mod tests {
