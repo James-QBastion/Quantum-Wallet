@@ -1,0 +1,30 @@
+name: Cairo Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Scarb Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Scarb
+        uses: software-mansion/setup-scarb@v1
+        with:
+          scarb-version: "2.15.1"
+
+      - name: Check Cairo format
+        run: scarb fmt --check
+
+      - name: Build (release profile)
+        run: scarb --profile release build --package falcon
+
+      - name: Run Cairo tests
+        run: scarb test
